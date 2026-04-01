@@ -5,7 +5,15 @@
     # to be cached already while still being as fresh as possible.
     # See https://discourse.nixos.org/t/differences-between-nix-channels/13998
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    
+  
+    # Small channels (e.g. nixos-25.11-small, nixos-unstable-small) are identical
+    # to large channels, but are updated as soon as Hydra has finished building a
+    # defined set of commonly-used packages. Thus, users following these channels
+    # will get faster updates but may need to build any packages they use from 
+    # outside the defined set themselves. These channels are intended to be used
+    # for server setups, for example.
+    nixpkgs-unstable-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";
+
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
   };
