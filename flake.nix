@@ -27,12 +27,19 @@
    # Helper for making nixOS system from common modules
    buildSystem = { hostname, system ? [ "aarch64-linux" ]} : 
    nixpkgs.lib.nixosSystem {                                                       
-     inherit system;
-     specialArgs = {inherit (self) inputs outputs;};
+     specialArgs = {
+        inherit (self) inputs outputs;
+     };
+
      modules = [
-       ./hosts/${hostname}
+       # A common pattern in the past was to use `inherit system`this pattern
+       # has been deprecated since 23.11. We use new pattern in module system instead.
+       { nixpkgs.hostPlatform = system; }
+       
        # Enforce consistent host name.
        { networking.hostName = hostname; }
+       
+       ./hosts/${hostname}
      ];
    };
   in {
