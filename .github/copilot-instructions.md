@@ -1,17 +1,18 @@
 # Copilot Instructions for nixos-anywhere-examples
 
-This repository contains NixOS configuration examples for deploying systems with [nixos-anywhere](https://github.com/nix-community/nixos-anywhere), focusing on remote server deployments.
+This repository contains NixOS configuration for deploying systems with [nixos-anywhere](https://github.com/nix-community/nixos-anywhere), focusing on remote server deployments.
+The systems are primarily meant to host services specific to UConn Skydiving.
 
 ## Build Commands
 
-Build a specific host configuration:
+Test a specific host configuration:
 ```bash
-nix build .#nixosConfigurations.<hostname>.config.system.build.toplevel
+nix run github:nix-community/nixos-anywhere -- --flake .#<configuration name> --vm-test
 ```
 
-Build the current default configuration:
+Build a specific host configuration to remote:
 ```bash
-nix build
+nix run github:nix-community/nixos-anywhere -- --flake .#<configuration name> --target-host root@<ip address>
 ```
 
 Show all flake outputs:
@@ -24,6 +25,11 @@ Check flake for errors:
 nix flake check
 ```
 
+Before commiting, make sure to create the pre-commit files by running
+```bash
+nix develop
+```
+
 ## Architecture Overview
 
 ### Flake Structure
@@ -32,17 +38,14 @@ The repository uses a **Nix flake-based architecture** with these key components
 
 1. **`flake.nix`**: Entry point defining inputs (nixpkgs, disko, sops-nix) and a `buildSystem` helper function that standardizes host creation
 2. **`hosts/<hostname>/`**: Per-host configurations, each containing:
-   - `configuration.nix` - Main host config with boot, SSH, packages
+   - `default.nix` - Main host config with imports to other configurations
    - `hardware-configuration.nix` - Hardware-specific settings (auto-generated, do not modify manually)
    - `disk-config.nix` - Disko declarative disk partitioning
-   - `<hostname>.nix` - Host-specific overrides (optional)
 3. **`hosts/common/`**: Shared modules imported by individual hosts
 
 ### Module System Patterns
 
 **Common modules are opt-in**: Individual host configurations explicitly import only the `hosts/common/` modules they need. Common modules are not automatically applied to all hosts.
-
-**List merging**: NixOS merges lists by default (e.g., `networking.firewall.allowedTCPPorts`). Common modules can add items without overriding host-specific settings.
 
 **Helper function**: The `buildSystem` function in `flake.nix` encapsulates the standard pattern:
 - Sets `nixpkgs.hostPlatform` (modern approach, not deprecated `system`)
@@ -53,8 +56,8 @@ The repository uses a **Nix flake-based architecture** with these key components
 ### Key Dependencies
 
 - **disko**: Declarative disk partitioning (see `disk-config.nix` files)
-- **sops-nix**: Secrets management (referenced in `tailscale.nix` via `config.age.secrets`)
 - **nixpkgs**: Uses `nixos-unstable-small` channel for fast updates suitable for servers
+- **git-hooks**: lints and enforces style before commiting
 
 ## Key Conventions
 
@@ -70,28 +73,10 @@ The repository uses a **Nix flake-based architecture** with these key components
 - Import `modulesPath` for standard NixOS profiles (e.g., `"${modulesPath}/profiles/qemu-guest.nix"`)
 - Enable experimental features in host config: `nix.settings.experimental-features = [ "nix-command" "flakes" ]`
 
-### SSH Configuration
+### Security Practices
+- Always give the least privileges a program requires
+- SSH should never be accessible from outside a VPN (tailscale, wireguard)
 
-- Root SSH access: Add authorized keys to `users.users.root.openssh.authorizedKeys.keys`
-- Security defaults: Password authentication is disabled, prefer `PermitRootLogin = "prohibit-password"`
-- SSH is opened via `services.openssh.enable = true` (firewall automatically allows port 22)
-
-### Disko Patterns
-
-Standard disk setup uses:
-- GPT partition table with BIOS boot (1M EF02), ESP (500M EF00), and LVM root
-- LVM provides flexibility for resizing
-- `lib.mkDefault "/dev/sda"` allows override per host
-
-### Common Module Reference
-
-Available reusable modules in `hosts/common/`:
-- `auto-upgrade.nix` - Automatic system updates from flake (configure `flake` URL and schedule)
-- `garbage-collection.nix` - Automatic nix store cleanup (weekly, 30-day retention)
-- `sshd.nix` - Hardened SSH server defaults
-- `tailscale.nix` - VPN with firewall trust (requires sops-nix secret for auth key)
-- `firewall.nix` - Basic firewall configuration
-- `default.nix` - Minimal common settings (timezone)
 
 ### State Version
 
