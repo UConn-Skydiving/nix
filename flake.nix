@@ -1,10 +1,13 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    # The stable/large nixos packages channel. In general, living on the edge
+    # is better, but there may be some cases to follow the slow channel as well.
+    #nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    
     # Use nixpkgs-unstable instead of master so that packages are more likely
     # to be cached already while still being as fresh as possible.
     # See https://discourse.nixos.org/t/differences-between-nix-channels/13998
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    #nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   
     # Small channels (e.g. nixos-25.11-small, nixos-unstable-small) are identical
     # to large channels, but are updated as soon as Hydra has finished building a
@@ -12,10 +15,17 @@
     # will get faster updates but may need to build any packages they use from 
     # outside the defined set themselves. These channels are intended to be used
     # for server setups, for example.
-    nixpkgs-unstable-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
 
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs"; 
+    };
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -25,7 +35,7 @@
     ...
   } @ inputs: let
    # Helper for making nixOS system from common modules
-   buildSystem = { hostname, system ? [ "aarch64-linux" ]} : 
+   buildSystem = { hostname, system ? [ "aarch64-linux" ], additionalModules ? [ ] } : 
    nixpkgs.lib.nixosSystem {                                                       
      specialArgs = {
         inherit (self) inputs outputs;
@@ -40,12 +50,16 @@
        { networking.hostName = hostname; }
        
        ./hosts/${hostname}
-     ];
+     ] ++ additionalModules;
    };
   in {
 
     nixosConfigurations = {
-        jonathan = buildSystem "jonathan" "aarch64-linux";
+        jonathan = buildSystem {
+          hostname = "jonathan";
+          system = "aarch64-linux"; 
+          additionalModules = [ disko.nixosModules.disko ];
+        };
     };
 
     # 2GB/2CPU seems to be the minimum for kexec. Don't try 1GB RAM.

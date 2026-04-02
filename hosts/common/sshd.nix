@@ -1,3 +1,5 @@
+{ ... }:
+
 {
   services.openssh = {
     enable = true;
@@ -12,5 +14,5 @@
   };
 
   # lists are merged by default. This does not override any other allowedTCPPorts
-  networking.firewall.allowedTCPPorts = [ 22 ];
+  # networking.firewall.allowedTCPPorts = [ 22 ];
 }

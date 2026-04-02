@@ -1,3 +1,5 @@
+{ ... }:
+
 {
   system.autoUpgrade = {
     enable = true;
