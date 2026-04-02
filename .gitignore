@@ -1,0 +1,32 @@
+# Nix build outputs
+result
+result-*
+.pre-commit-config.yaml
+
+# Direnv
+.direnv/
+.envrc
+
+# Secrets and sensitive files
+*.age
+*.key
+*.pem
+secrets/
+.sops.yaml
+
+# Editor and IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+
+# Hardware configuration (auto-generated, but some prefer to track it)
+# Uncomment if you want to ignore auto-generated hardware configs:
+# hardware-configuration.nix
