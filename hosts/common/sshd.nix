@@ -1,5 +1,4 @@
 { ... }:
-
 {
   services.openssh = {
     enable = true;
@@ -7,8 +6,8 @@
       PasswordAuthentication = false;
       UseDns = true;
       X11Forwarding = true;
-      # "yes", "without-password", "prohibit-password", "forced-commands-only", "no" 
-      PermitRootLogin = "prohibit-password"; 
+      # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
+      PermitRootLogin = "prohibit-password";
       PrintMotd = true;
     };
   };

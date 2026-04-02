@@ -1,18 +1,8 @@
-{ modulesPath, ... }:
-
+{ ... }:
 {
   imports = [
-    (modulesPath + "/installer/scan/not-detected.nix")
-    (modulesPath + "/profiles/qemu-guest.nix")
-    ./disk-config.nix
+    ./disk-config.override.nix
   ];
 
-  boot.loader.grub = {
-    # no need to set devices, disko will add all devices that have a EF02 partition to the list already}
-    # devices = [ ];
-    efiSupport = true;
-    efiInstallAsRemovable = true;
-  };
-
-  disko.devices.disk.disk1.device = "/dev/vda";
+  system.stateVersion = "24.05";
 }
