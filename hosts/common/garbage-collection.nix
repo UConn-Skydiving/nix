@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   # https://www.reddit.com/r/NixOS/comments/1cunvdw/comment/l600dnk/
   # Seems like we need this otherwise we don't actually get auto gc?
   # See above thread for more ^

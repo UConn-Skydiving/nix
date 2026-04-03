@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   system.autoUpgrade = {
     enable = true;
     flake = "github:UConn-Skydiving/nix#netcup";

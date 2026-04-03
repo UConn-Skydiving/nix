@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   services.tailscale = {
     enable = true;
     openFirewall = true;
@@ -11,5 +10,5 @@
   };
 
   # Tell the firewall to implicitly trust packets routed over Tailscale:
-  networking.firewall.trustedInterfaces = [ "tailscale0" ];
+  networking.firewall.trustedInterfaces = ["tailscale0"];
 }
