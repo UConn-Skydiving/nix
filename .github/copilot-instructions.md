@@ -11,7 +11,8 @@ Test a specific host configuration:
 
 ```bash
 nix run github:nix-community/nixos-anywhere -- \
-    --flake .#<configuration name> --vm-test
+    --flake .#<configuration name> \
+    --vm-test
 ```
 
 Build a specific host configuration to remote:

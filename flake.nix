@@ -34,27 +34,27 @@
     self,
     ...
   } @ inputs: let
-    # Helper for making nixOS system from common modules
-    buildSystem = {
-      hostname,
-      system ? ["aarch64-linux"],
-      additionalModules ? [],
-    }:
-      nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit (self) inputs outputs;
-        };
+    inherit (nixpkgs) lib;
+    linux-arm = buildSystem "aarch64-linux";
+    # linux = buildSystem "x86_64-linux"
+    # darwin-arm =
 
+    buildSystem = architecture: name: additionalModules:
+      nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit (self) inputs outputs;};
         modules =
           [
-            # A common pattern in the past was to use `inherit system`this pattern
-            # has been deprecated since 23.11. We use new pattern in module system instead.
-            {nixpkgs.hostPlatform = system;}
+            ./hosts/${name}
 
-            # Enforce consistent host name.
-            {networking.hostName = hostname;}
+            {
+              # A common pattern in the past was to use `inherit system`this pattern
+              # has been deprecated since 23.11. We use new pattern in module system instead.
+              nixpkgs.hostPlatform = lib.mkDefault architecture;
 
-            ./hosts/${hostname}
+              # Enforce consistent host name.
+              networking.hostName = lib.mkDefault name;
+              system.stateVersion = "25.05";
+            }
           ]
           ++ additionalModules;
       };
@@ -65,11 +65,7 @@
     preCommit
     // {
       nixosConfigurations = {
-        jonathan = buildSystem {
-          hostname = "jonathan";
-          system = "aarch64-linux";
-          additionalModules = [inputs.disko.nixosModules.disko];
-        };
+        jonathan = linux-arm "jonathan" [inputs.disko.nixosModules.disko];
       };
     };
 }

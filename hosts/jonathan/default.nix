@@ -1,7 +1,6 @@
 {...}: {
   imports = [
     ./disk-config.override.nix
+    ../common/vm.nix
   ];
-
-  system.stateVersion = "24.05";
 }

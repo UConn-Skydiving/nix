@@ -72,7 +72,8 @@ in {
         gitlint.enable = true;
 
         # find broken links
-        lychee.enable = true;
+        # no internet access, so cannot run pre-commit. Instead should be handled by CI
+        # lychee.enable = true;
       };
     };
   });
