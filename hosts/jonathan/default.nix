@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ./disk-config.override.nix
   ];
