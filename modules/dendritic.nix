@@ -13,7 +13,7 @@
   flake-file.inputs.flake-file.url = lib.mkDefault "github:vic/flake-file";
   # Likewise, we use vic's library for dendritic pattern. This is a matter of 
   # opinion. It's reasonable to use basic dendritic flake-parts also.
-  flake-file.inputs.den.url = lib.mkDefault "github:vic/den";
+  flake-file.inputs.den.url = lib.mkDefault "github:vic/den/latest";
 
   imports = [
     (inputs.flake-file.flakeModules.dendritic or { })

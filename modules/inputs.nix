@@ -6,6 +6,10 @@
 
 {
   flake-file.inputs = {
+    # Global nixpkgs channel used by follows = "nixpkgs".
+    nixpkgs.url =
+      "https://channels.nixos.org/nixos-unstable-small/nixexprs.tar.xz";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
