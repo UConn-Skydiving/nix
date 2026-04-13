@@ -8,7 +8,7 @@
       url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    den.url = "github:vic/den";
+    den.url = "github:vic/den/latest";
     flake-file.url = "github:vic/flake-file";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -19,8 +19,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     import-tree.url = "github:vic/import-tree";
-    nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
+    nixpkgs.url = "https://channels.nixos.org/nixos-unstable-small/nixexprs.tar.xz";
     nixpkgs-lib.follows = "nixpkgs";
-    nixpkgs-small.url = "https://channels.nixos.org/nixos-unstable-small/nixexprs.tar.xz";
   };
 }
