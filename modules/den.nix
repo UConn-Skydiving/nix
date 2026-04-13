@@ -7,7 +7,7 @@
 #   den.hosts.x86_64-linux.backup = { };
 # }
 #
-# Hosts use the global nixpkgs input (currently nixos-unstable-small).
+# Hosts use the global nixpkgs input.
 # User/home declarations can be added later if we move to multi-user configs.
 ################################################################################
 
