@@ -1,71 +1,23 @@
+# DO-NOT-EDIT. This file was auto-generated using github:vic/flake-file.
+# Use `nix run .#write-flake` to regenerate it.
 {
+
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
+
   inputs = {
-    # The stable/large nixos packages channel. In general, living on the edge
-    # is better, but there may be some cases to follow the slow channel as well.
-    #nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-
-    # Use nixpkgs-unstable instead of master so that packages are more likely
-    # to be cached already while still being as fresh as possible.
-    # See https://discourse.nixos.org/t/differences-between-nix-channels/13998
-    #nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
-    # Small channels (e.g. nixos-25.11-small, nixos-unstable-small) are identical
-    # to large channels, but are updated as soon as Hydra has finished building a
-    # defined set of commonly-used packages. Thus, users following these channels
-    # will get faster updates but may need to build any packages they use from
-    # outside the defined set themselves. These channels are intended to be used
-    # for server setups, for example.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
-
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
+    den.url = "github:vic/den";
+    flake-file.url = "github:vic/flake-file";
+    flake-parts = {
+      inputs.nixpkgs-lib.follows = "nixpkgs-lib";
+      url = "github:hercules-ci/flake-parts";
     };
-
-    git-hooks = {
-      url = "github:cachix/git-hooks.nix";
+    home-manager = {
       inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/home-manager";
     };
+    import-tree.url = "github:vic/import-tree";
+    nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
+    nixpkgs-lib.follows = "nixpkgs";
   };
 
-  outputs = {
-    nixpkgs,
-    systems,
-    self,
-    ...
-  } @ inputs: let
-    inherit (nixpkgs) lib;
-    linux-arm = buildSystem "aarch64-linux";
-    # linux = buildSystem "x86_64-linux"
-    # darwin-arm =
-
-    buildSystem = architecture: name: additionalModules:
-      nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit (self) inputs outputs;};
-        modules =
-          [
-            ./hosts/${name}
-
-            {
-              # A common pattern in the past was to use `inherit system`this pattern
-              # has been deprecated since 23.11. We use new pattern in module system instead.
-              nixpkgs.hostPlatform = lib.mkDefault architecture;
-
-              # Enforce consistent host name.
-              networking.hostName = lib.mkDefault name;
-              system.stateVersion = "25.05";
-            }
-          ]
-          ++ additionalModules;
-      };
-
-    # Git pre-commit hooks configuration
-    preCommit = import ./pre-commit.nix {inherit inputs self nixpkgs systems;};
-  in
-    preCommit
-    // {
-      nixosConfigurations = {
-        jonathan = linux-arm "jonathan" [inputs.disko.nixosModules.disko];
-      };
-    };
 }
