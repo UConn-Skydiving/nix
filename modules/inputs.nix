@@ -7,6 +7,11 @@
 {
   flake-file.inputs = {
     # Global nixpkgs channel used by follows = "nixpkgs".
+    # Small advances more often so may require more builds than the equivalent
+    # large channel. Small does NOT mean that it contains less packages, just
+    # that less may be cached, and therefore may lead to longer build times.
+    # We choose small to live on the bleeding-edge. Should build times become
+    # prohibitively long, we could start our own cache.
     nixpkgs.url =
       "https://channels.nixos.org/nixos-unstable-small/nixexprs.tar.xz";
 

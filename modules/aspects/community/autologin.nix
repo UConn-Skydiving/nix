@@ -1,11 +1,11 @@
-# modules/aspects/custom/autologin.nix
+# module/aspects/community/autologin.nix
 ################################################################################
 # Context-aware autologin helper for desktop systems.
 # Applies only when a user context exists and a display manager is enabled.
 ################################################################################
 
 {
-  custom.autologin =
+  community.autologin =
     { user, ... }:
     {
       nixos =

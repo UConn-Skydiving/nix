@@ -1,4 +1,4 @@
-# modules/aspects/custom/vm-bootable.nix
+# modules/aspects/community/vm-bootable.nix
 ################################################################################
 # Provides bootable installer variants for VM and USB media builds.
 ################################################################################
@@ -15,7 +15,7 @@ let
   };
 in
 {
-  custom.vm-bootable.provides = {
+  community.vm-bootable.provides = {
     tui = installer "minimal";
     gui = installer "graphical-base";
   };

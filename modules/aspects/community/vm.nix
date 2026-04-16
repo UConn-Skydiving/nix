@@ -1,20 +1,20 @@
-# modules/aspects/custom/vm.nix
+# modules/aspects/community/vm.nix
 ################################################################################
 # Composes VM profiles for GUI and TUI workflows.
 ################################################################################
 
-{ custom, ... }:
+{ community, ... }:
 {
-  custom.vm.provides = {
+  community.vm.provides = {
     gui.includes = [
-      custom.vm
-      custom.vm-bootable._.gui
-      custom.xfce-desktop
+      community.vm
+      community.vm-bootable._.gui
+      community.xfce-desktop
     ];
 
     tui.includes = [
-      custom.vm
-      custom.vm-bootable._.tui
+      community.vm
+      community.vm-bootable._.tui
     ];
   };
 }

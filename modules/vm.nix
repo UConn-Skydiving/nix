@@ -5,11 +5,11 @@
 # nix run .#vm
 ################################################################################
 
-{ inputs, custom, ... }:
+{ inputs, community, ... }:
 {
   den.aspects.jonathan.includes = [
-    custom.vm._.gui
-    # custom.vm._.tui
+    # community.vm._.gui
+    community.vm._.tui
   ];
 
   perSystem =

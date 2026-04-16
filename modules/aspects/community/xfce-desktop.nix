@@ -1,10 +1,10 @@
-# modules/aspects/custom/xfce-desktop.nix
+# modules/aspects/community/xfce-desktop.nix
 ################################################################################
 # Enables a minimal XFCE desktop stack.
 ################################################################################
 
 {
-  custom.xfce-desktop.nixos =
+  community.xfce-desktop.nixos =
     { lib, ... }:
     {
       services.xserver = {
