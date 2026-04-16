@@ -8,8 +8,8 @@
 { inputs, community, ... }:
 {
   den.aspects.jonathan.includes = [
-    # community.vm._.gui
-    community.vm._.tui
+    community.vm._.gui
+    # community.vm._.tui
   ];
 
   perSystem =
