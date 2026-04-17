@@ -20,7 +20,7 @@
         !pkgs.stdenvNoCC.isLinux
         || builtins.pathExists (jonathan.system.build.toplevel);
       vmBuilds =
-        !pkgs.stdenvNoCC.isLinux
+        !(pkgs.stdenvNoCC.isLinux || pkgs.stdenvNoCC.isDarwin)
         || builtins.pathExists (self'.packages.vm + "/bin/vm");
     in
     {
