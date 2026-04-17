@@ -36,24 +36,20 @@
             text = ''
               set -euo pipefail
 
-              if ! command -v qemu-system-aarch64 >/dev/null 2>&1; then
-                echo "error: qemu-system-aarch64 is required to run .#vm on Darwin." >&2
-                echo "hint: install it with 'nix profile install nixpkgs#qemu'." >&2
-                exit 1
-              fi
-
               readonly iso="${host.system.build.isoImage}"
               readonly qemu_share="${pkgs.qemu}/share/qemu"
               readonly ovmf_code="$qemu_share/edk2-aarch64-code.fd"
 
               if [ ! -e "$ovmf_code" ]; then
-                echo "error: missing aarch64 UEFI firmware in ${pkgs.qemu}." >&2
+                echo "error: missing aarch64 UEFI firmware in $qemu_share." >&2
+                echo "hint: this may indicate a qemu packaging mismatch on Darwin." >&2
                 exit 1
               fi
 
+              # Try macOS HVF acceleration first, then fall back to TCG.
               exec qemu-system-aarch64 \
                 -machine virt,accel=hvf:tcg \
-                -cpu host \
+                -cpu max \
                 -smp 4 \
                 -m 4096 \
                 -device virtio-gpu-pci \
@@ -62,7 +58,7 @@
                 -device usb-mouse \
                 -display default \
                 -bios "$ovmf_code" \
-                -cdrom "$iso" \
+                -drive "file=$iso,media=cdrom,readonly=on" \
                 "$@"
             '';
           }
